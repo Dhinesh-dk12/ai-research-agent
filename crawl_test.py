@@ -1,0 +1,18 @@
+import asyncio
+
+from mcp_client.crawl_client import CrawlClient
+
+
+async def main():
+
+    crawler = CrawlClient()
+
+    result = await crawler.crawl(
+        "https://langchain.com"
+    )
+
+    print(result[:2000])
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

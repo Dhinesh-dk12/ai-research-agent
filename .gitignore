@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual Environment
+.venv/
+venv/
+
+# Environment Variables
+.env
+# api
+Claude api key.docx
+tavily api key.docx
+# Logs
+logs/
+*.log
+
+# Generated Reports
+reports/
+
+# ChromaDB Database
+memory_db/
+
+# VS Code
+.vscode/
+
+# Operating System
+.DS_Store
+Thumbs.db
