@@ -33,6 +33,16 @@ def pdf_node(
         "reports/final_report.pdf"
     )
 
+    with open(
+        "reports/final_report.md",
+        "w",
+        encoding="utf-8",
+    ) as report_file:
+
+        report_file.write(
+            state["report"]
+        )
+
     pdf_service.generate_pdf(
 
         markdown_text=state[

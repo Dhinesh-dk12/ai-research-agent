@@ -36,39 +36,39 @@ The agent autonomously plans research, searches the web, extracts relevant conte
                  └──────────────┘
                          │
                          ▼
-                ┌───────────────┐
+                ┌─────────────┐
                 │ Executor Node │
-                └───────────────┘
+                └─────────────┘
                          │
                          ▼
-               ┌─────────────────┐
+               ┌───────────────┐
                │ Extraction Node │
-               └─────────────────┘
+               └───────────────┘
                          │
                          ▼
-            ┌────────────────────────┐
+            ┌────────────────────┐
             │ Memory Retrieval Node  │
-            └────────────────────────┘
+            └────────────────────┘
                          │
                          ▼
-              ┌────────────────────┐
+              ┌────────────────┐
               │ Reasoning Node     │
-              └────────────────────┘
+              └────────────────┘
                          │
                          ▼
-            ┌────────────────────────┐
+            ┌────────────────────┐
             │ Memory Storage Node    │
-            └────────────────────────┘
+            └────────────────────┘
                          │
                          ▼
-              ┌────────────────────┐
+              ┌────────────────┐
               │ Report Node        │
-              └────────────────────┘
+              └────────────────┘
                          │
                          ▼
-               ┌───────────────────┐
+               ┌───────────────┐
                │ PDF Generation    │
-               └───────────────────┘
+               └───────────────┘
                          │
                          ▼
                     FINAL REPORT
@@ -238,6 +238,29 @@ Example report sections include:
 - Evidence-based Reasoning
 - Professional Report Generation
 - PDF Export
+
+---
+
+## Changelog / Fixes
+
+**Stability**
+- Fixed a startup bug (syntax error + a broken Windows async setting) that stopped the agent from running at all
+- Fixed the planner crashing on research plans with more than 5 tasks
+- Fixed a harmless but alarming shutdown error message on Windows
+
+**Report quality**
+- Rewrote PDF export — tables, bold/italic text, links, and lists now render correctly, and it no longer crashes on special characters
+- Added source credibility scoring, so official and academic sources are weighted above low-quality ones
+- Resolved proxy-wrapped source links to point at the original article
+
+**Research quality**
+- Fixed memory retrieval so unrelated past research no longer leaks into new reports
+- Fixed source selection so every research task gets covered, not just the first few
+- Research planning is now date-aware, so search queries use the current year instead of stale dates
+
+**Project cleanup**
+- Reduced project dependencies from 216 packages to 13 actually used ones
+- Cleaned up unused/dead code (moved to a backup folder, nothing deleted)
 
 ---
 
