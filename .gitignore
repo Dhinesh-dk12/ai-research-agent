@@ -21,6 +21,7 @@ reports/
 
 # ChromaDB Database
 memory_db/
+chroma_db/
 
 # VS Code
 .vscode/
