@@ -1,4 +1,5 @@
 import re
+from urllib.parse import urlparse, parse_qs, unquote
 
 
 class ResultProcessor:
@@ -57,6 +58,33 @@ class ResultProcessor:
         "article",
     )
 
+    @staticmethod
+    def unwrap_translate(
+        url: str,
+    ) -> str:
+        """
+        Google Translate's proxy (translate.google.com/translate?u=...)
+        wraps the real URL in a query parameter. Unwrap it so citations
+        point at the original source instead of the translation proxy.
+        """
+
+        parsed = urlparse(url)
+
+        host = parsed.hostname or ""
+
+        if host == "translate.google.com" or host.endswith(
+            ".translate.google.com"
+        ):
+
+            target = parse_qs(
+                parsed.query
+            ).get("u")
+
+            if target:
+                return unquote(target[0])
+
+        return url
+
     @classmethod
     def extract_urls(
         cls,
@@ -72,6 +100,10 @@ class ResultProcessor:
         for url in urls:
 
             url = cls.clean_url(
+                url
+            )
+
+            url = cls.unwrap_translate(
                 url
             )
 
@@ -139,20 +171,26 @@ class ResultProcessor:
 
         lower = url.lower()
 
+        host = urlparse(lower).hostname or ""
+
         # Skip social media and low-value domains
         for domain in cls.SKIP_DOMAINS:
 
-            if domain in lower:
+            if host == domain or host.endswith(
+                "." + domain
+            ):
                 return True
 
         # Skip Next.js image proxy URLs
         if "/_next/image" in lower:
             return True
 
+        path = urlparse(lower).path
+
         # Skip common static assets
         for ext in cls.SKIP_EXTENSIONS:
 
-            if ext in lower:
+            if path.endswith(ext):
                 return True
 
         return False
@@ -193,10 +231,14 @@ class ResultProcessor:
         if "ieee.org" in lower:
             score += 15
 
-        if ".gov" in lower:
+        if "gov" in (
+            urlparse(lower).hostname or ""
+        ).split("."):
             score += 15
 
-        if ".edu" in lower:
+        if "edu" in (
+            urlparse(lower).hostname or ""
+        ).split("."):
             score += 15
 
         return score

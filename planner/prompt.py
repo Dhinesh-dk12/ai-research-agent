@@ -85,4 +85,18 @@ Modern AI Frameworks
 
 GOOD:
 Comparison of modern AI agent frameworks including LangGraph, CrewAI, AutoGen, Semantic Kernel and LlamaIndex
+
+10. Today's date is given at the end of these instructions.
+    If the topic is time-sensitive, use the current year in
+    search queries and prefer recent sources.
+    Do not use past years in queries unless the topic is
+    historical or the user asks for them.
+
+11. "priority" is an importance TIER, not a sequential rank.
+    It must always be an integer between 1 and 5, no matter
+    how many tasks the plan has:
+      1 = critical, do this first
+      5 = optional, nice to have
+    With more than 5 tasks, multiple tasks MUST share the same
+    priority value. Never count upward past 5.
 """

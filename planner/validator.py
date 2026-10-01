@@ -1,3 +1,4 @@
+import json
 import re
 from typing import Union
 
@@ -28,6 +29,28 @@ def clean_llm_output(text: str) -> str:
     return text.strip()
 
 
+def _clamp_priorities(data: dict) -> dict:
+    """
+    The schema caps priority at 1-5 (an importance tier), but an
+    LLM can occasionally emit a higher number, especially on plans
+    with many tasks (e.g. numbering tasks 1-10 instead of reusing
+    1-5). Clamp instead of failing the whole plan over one field.
+    """
+
+    for task in data.get("tasks", []):
+
+        priority = task.get("priority")
+
+        if isinstance(priority, int):
+
+            task["priority"] = max(
+                1,
+                min(5, priority),
+            )
+
+    return data
+
+
 def validate_research_plan(
     planner_output: Union[str, dict]
 ) -> ResearchPlan:
@@ -39,6 +62,11 @@ def validate_research_plan(
 
         # Already parsed
         if isinstance(planner_output, dict):
+
+            planner_output = _clamp_priorities(
+                planner_output
+            )
+
             return ResearchPlan.model_validate(planner_output)
 
         # Clean markdown formatting
@@ -47,8 +75,13 @@ def validate_research_plan(
         # Repair malformed JSON
         repaired = repair_json(planner_output)
 
+        # Clamp before Pydantic validation, not after
+        data = _clamp_priorities(
+            json.loads(repaired)
+        )
+
         # Validate against Pydantic model
-        plan = ResearchPlan.model_validate_json(repaired)
+        plan = ResearchPlan.model_validate(data)
 
         return plan
 

@@ -1,4 +1,5 @@
 import asyncio
+from itertools import zip_longest
 
 from executor.result_processor import (
     ResultProcessor,
@@ -125,7 +126,7 @@ class ExtractionService:
             "Processing search results..."
         )
 
-        urls = []
+        per_task_urls = []
 
         for result in task_results.values():
 
@@ -139,7 +140,7 @@ class ExtractionService:
                     )
                 )
 
-                urls.extend(
+                per_task_urls.append(
                     extracted_urls
                 )
 
@@ -149,8 +150,17 @@ class ExtractionService:
                     f"Failed to process search result: {e}"
                 )
 
+        # Round-robin: take the best URL from every task first,
+        # so each plan task contributes sources.
+        interleaved = [
+            url
+            for group in zip_longest(*per_task_urls)
+            for url in group
+            if url is not None
+        ]
+
         urls = list(
-            dict.fromkeys(urls)
+            dict.fromkeys(interleaved)
         )
 
         logger.info(

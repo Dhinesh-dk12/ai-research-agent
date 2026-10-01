@@ -1,3 +1,5 @@
+import asyncio
+
 from scrapling import Fetcher
 
 from utils.logger import logger
@@ -20,7 +22,8 @@ class ScraplingExtractor:
 
         try:
 
-            page = self.fetcher.get(
+            page = await asyncio.to_thread(
+                self.fetcher.get,
                 url,
                 timeout=30,
             )
@@ -43,7 +46,9 @@ class ScraplingExtractor:
 
         try:
 
-            content = page.get_all_text()
+            content = await asyncio.to_thread(
+                page.get_all_text
+            )
 
         except Exception as e:
 

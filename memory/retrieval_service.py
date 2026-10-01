@@ -27,6 +27,8 @@ class MemoryRetrievalService:
 
         top_k: int = 5,
 
+        min_similarity: float = 0.45,
+
     ) -> list[Evidence]:
 
         logger.info(
@@ -66,16 +68,41 @@ class MemoryRetrievalService:
             ):
 
                 logger.info(
-                    f"Found {len(documents[0])} related memories"
+                    f"Checking {len(documents[0])} candidate memories"
                 )
 
-                for document, metadata in zip(
+                for document, metadata, distance in zip(
 
                     documents[0],
 
                     metadatas[0],
 
+                    results.get(
+                        "distances",
+                        [[]],
+                    )[0],
+
                 ):
+
+                    # Chroma's default metric is squared L2. With
+                    # normalized embeddings: cosine = 1 - distance / 2
+                    similarity = 1 - (
+                        distance / 2
+                    )
+
+                    if similarity < min_similarity:
+
+                        logger.info(
+                            f"Skipping unrelated memory "
+                            f"(similarity {similarity:.2f})"
+                        )
+
+                        continue
+
+                    logger.info(
+                        f"Using related memory "
+                        f"(similarity {similarity:.2f})"
+                    )
 
                     evidences.append(
 

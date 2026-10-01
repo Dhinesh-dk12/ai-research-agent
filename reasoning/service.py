@@ -1,5 +1,9 @@
 from llm.client import LLMClient
 
+from research.credibility import (
+    group_evidences,
+)
+
 
 class ReasoningService:
 
@@ -13,12 +17,17 @@ class ReasoningService:
         evidences,
     ):
 
+        # One entry per unique URL, best sources first
+        sources = group_evidences(
+            evidences
+        )
+
         evidence_text = []
 
         citations = []
 
         for index, evidence in enumerate(
-            evidences,
+            sources,
             start=1,
         ):
 
@@ -29,6 +38,9 @@ SOURCE [{index}]
 
 URL:
 {evidence.source_url}
+
+CREDIBILITY:
+{evidence.credibility.score}/100 ({evidence.credibility.label})
 
 CONTENT:
 {evidence.content}
@@ -57,7 +69,14 @@ Instructions:
    - [2][3][7]
 4. Never invent citations.
 5. Use ONLY the evidence provided.
-6. Preserve source credibility.
+6. Each source has a CREDIBILITY score (0-100).
+   Prefer higher-credibility sources for key facts and statistics.
+   When sources disagree, trust the higher-credibility one and
+   mention the disagreement.
+   Do not let any single source support more than about a quarter
+   of your claims.
+   If an important claim rests only on a source scored below 50,
+   describe it as lower-confidence.
 7. Mention limitations if evidence is insufficient.
 8. Produce a concise but detailed reasoning output.
 9. At the end of the reasoning output, include the REFERENCES section exactly as provided below.

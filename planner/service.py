@@ -1,3 +1,5 @@
+from datetime import date
+
 from planner.schemas import (
     ResearchRequest,
     ResearchPlan,
@@ -29,7 +31,14 @@ class PlannerService:
         messages = [
             {
                 "role": "system",
-                "content": PLANNER_SYSTEM_PROMPT,
+                "content": (
+                    PLANNER_SYSTEM_PROMPT
+                    + "\n\nToday's date is "
+                    + date.today().strftime(
+                        "%B %d, %Y"
+                    )
+                    + "."
+                ),
             },
             {
                 "role": "user",
