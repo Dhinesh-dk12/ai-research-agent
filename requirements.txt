@@ -19,7 +19,9 @@ litellm==1.88.1
 mcp==1.27.2
 
 # --- Web extraction ---
-scrapling==0.4.10
+# The [fetchers] extra pulls in curl_cffi etc. After installing, run
+# `scrapling install` once to download the stealth-fallback browser.
+scrapling[fetchers]==0.4.10
 
 # --- Memory (vector store + embeddings) ---
 chromadb==1.5.9
@@ -36,8 +38,8 @@ reportlab==5.0.0
 # --- Logging ---
 loguru==0.7.3
 
-# --- Used only by crawl_test.py (CrawlClient), not by the
+# --- Optional: used only by crawl_test.py (CrawlClient), not by the
 # main pipeline (extraction uses ScraplingExtractor instead).
-# Remove this line if you delete crawl_test.py and
-# mcp_client/crawl_client.py.
-Crawl4AI==0.8.9
+# Uncomment to install. Crawl4AI 0.8.9 conflicts with Scrapling's
+# lxml requirement; 0.9.1 or newer works.
+# Crawl4AI>=0.9.1

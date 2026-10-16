@@ -1,0 +1,25 @@
+[project]
+name = "ai-research-agent"
+version = "0.1.0"
+description = "An AI-powered Research Agent built with LangGraph, Claude, Tavily MCP, ChromaDB, and Sentence Transformers."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "python-dotenv==1.2.2",
+    "langgraph==1.2.4",
+    "litellm==1.88.1",
+    "mcp==1.27.2",
+    "scrapling[fetchers]==0.4.10",
+    "chromadb==1.5.9",
+    "sentence-transformers==5.5.1",
+    "pydantic==2.13.4",
+    "typing_extensions==4.15.0",
+    "json_repair==0.60.1",
+    "reportlab==5.0.0",
+    "loguru==0.7.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "Crawl4AI>=0.9.1",  # used only by crawl_test.py, not the main pipeline
+]

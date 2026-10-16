@@ -5,6 +5,7 @@ __pycache__/
 
 # Virtual Environment
 .venv/
+.venv-old-pip/
 venv/
 
 # Environment Variables
@@ -18,6 +19,9 @@ logs/
 
 # Generated Reports
 reports/
+
+# Local backups of removed files
+backups_for_removed_folders/
 
 # ChromaDB Database
 memory_db/
