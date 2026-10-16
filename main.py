@@ -19,7 +19,7 @@ async def main():
         # -----------------------------
 
         "query":
-        "give me factually correct and accurate research report about NASA's Voyager Spacecraft.",
+        "give me factually correct and accurate research report about mangalyan project.",
 
         # -----------------------------
         # Planner
@@ -191,16 +191,16 @@ if __name__ == "__main__":
             "exception"
         )
 
-        # Same known-harmless case, but for when it surfaces as a
-        # regular event-loop callback error instead of a __del__
-        # finalizer error.
-        if (
-            isinstance(
-                exc,
-                RuntimeError,
-            )
-
-            and str(exc) == "Event loop is closed"
+        # Same known-harmless shutdown noise, but reaching us
+        # through the event loop's own exception handler (prints
+        # as "Fatal error on SSL transport") instead of through
+        # the __del__ / garbage-collection path above. Reuse the
+        # same recognizer so both paths agree on what's safe to
+        # hide.
+        if exc is not None and _is_known_proactor_shutdown_noise(
+            type(exc),
+            exc,
+            exc.__traceback__,
         ):
 
             return
